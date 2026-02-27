@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAV_CORP // RU_EDITION</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #ff1f1f; --bg: #000; --text: #fff; --line: rgba(255,255,255,0.1); }
+        
+        /* КРАСНЫЙ КУРСОР WINDOWS */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="%23ff1f1f" d="M10,2l15,15l-4.5,1.5l3.5,6l-3,2l-3.5-6L10,24V2z"/></svg>'), auto;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); color: var(--text); 
+            overflow-x: hidden; line-height: 1.4;
+        }
+
+        .space-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,1)), 
+                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
+            background-size: cover; background-position: center; z-index: -2;
+            filter: grayscale(1) brightness(0.4);
+        }
+
+        /* БУРГЕР-МЕНЮ */
+        .menu-btn {
+            position: fixed; top: 30px; left: 30px; z-index: 1000;
+            width: 40px; height: 30px; display: flex; flex-direction: column;
+            justify-content: space-between; transition: 0.3s;
+        }
+        .menu-btn span { width: 100%; height: 3px; background: var(--accent); }
+
+        .sidebar {
+            position: fixed; top: 0; left: -350px; width: 350px; height: 100%;
+            background: rgba(5, 5, 5, 0.98); backdrop-filter: blur(25px);
+            z-index: 999; padding: 100px 40px; transition: 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+            border-right: 1px solid var(--line);
+        }
+        .sidebar.active { left: 0; }
+        .sidebar a {
+            display: block; color: #fff; text-decoration: none; font-size: 1.3rem;
+            font-weight: 700; margin-bottom: 25px; text-transform: uppercase;
+            transition: 0.3s; opacity: 0.5; letter-spacing: 1px;
+        }
+        .sidebar a:hover { opacity: 1; color: var(--accent); padding-left: 10px; }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 50px; }
+        .reveal { opacity: 0; transform: translateY(40px); transition: 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        header { height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+        .tag { font-size: 12px; text-transform: uppercase; letter-spacing: 6px; color: var(--accent); margin-bottom: 20px; font-weight: 700; }
+        h1 { font-size: clamp(3.5rem, 10vw, 8rem); font-weight: 900; letter-spacing: -5px; line-height: 0.85; margin-bottom: 30px; }
+        .hero-desc { font-size: 1.6rem; max-width: 750px; color: rgba(255,255,255,0.6); border-left: 2px solid var(--accent); padding-left: 30px; }
+
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(0,0,0,0.5); }
+        .stat-box { padding: 60px 40px; border-right: 1px solid var(--line); text-align: center; }
+        .stat-num { font-size: 3.5rem; font-weight: 900; color: var(--accent); display: block; }
+        .stat-txt { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.5; }
+
+        .services-grid { display: grid; grid-template-columns: 1fr 1fr; background: var(--line); gap: 1px; }
+        .s-card { background: rgba(5,5,5,0.8); padding: 100px 60px; text-decoration: none; color: inherit; transition: 0.5s; position: relative; }
+        .s-card:hover { background: #fff; color: #000; }
+        .s-card h3 { font-size: 3.5rem; font-weight: 900; margin-bottom: 25px; letter-spacing: -2px; text-transform: uppercase; }
+
+        .faq-section { padding: 150px 0; max-width: 1000px; margin: 0 auto; }
+        .faq-item { border-bottom: 1px solid var(--line); }
+        .faq-header { padding: 40px 0; display: flex; justify-content: space-between; cursor: pointer; font-size: 1.5rem; font-weight: 700; transition: 0.3s; }
+        .faq-body { max-height: 0; overflow: hidden; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); color: rgba(255,255,255,0.5); font-size: 1.2rem; }
+        .faq-item.active .faq-body { max-height: 500px; padding-bottom: 40px; }
+        .faq-item.active .faq-header { color: var(--accent); }
+
+        footer { padding: 100px 0; text-align: center; border-top: 1px solid var(--line); position: relative; }
+        .big-logo { font-size: 15vw; font-weight: 900; opacity: 0.03; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <div class="space-bg"></div>
+
+    <div class="menu-btn" onclick="toggleMenu()">
+        <span></span><span style="margin: 8px 0;"></span><span></span>
+    </div>
+
+    <nav class="sidebar" id="sidebar">
+        <p style="color: var(--accent); font-size: 10px; letter-spacing: 3px; margin-bottom: 40px;">ДОП. РЕСУРСЫ</p>
+        <a href="https://translate.yandex.ru" target="_blank">Яндекс Перевод</a>
+        <a href="https://lingust.ru/english" target="_blank">Уроки Lingust</a>
+        <a href="https://studynow.ru/dicta" target="_blank">Диктанты</a>
+        <a href="https://fenglish.ru" target="_blank">Фильмы в оригинале</a>
+        <a href="https://reword.org" target="_blank">ReWord App</a>
+        <a href="#" onclick="toggleMenu()" style="margin-top: 50px; color: var(--accent);">Закрыть ×</a>
+    </nav>
+
+    <div class="container">
+        <header>
+            <div class="tag">Russia Protocol // 2026</div>
+            <h1 class="reveal">ENGLISH<br>NAV_CORP</h1>
+            <p class="hero-desc reveal">Прямой доступ к лучшим инструментам обучения. Всё, что нужно для английского, собрано здесь и работает без ограничений.</p>
+        </header>
+    </div>
+
+    <div class="stats">
+        <div class="stat-box reveal"><span class="stat-num">RU</span><span class="stat-txt">REGION READY</span></div>
+        <div class="stat-box reveal"><span class="stat-num">40%</span><span class="stat-txt">SPEED UP</span></div>
+        <div class="stat-box reveal"><span class="stat-num">FREE</span><span class="stat-txt">OPEN ACCESS</span></div>
+        <div class="stat-box reveal"><span class="stat-num">100+</span><span class="stat-txt">RESOURCES</span></div>
+    </div>
+
+    <section class="services-grid">
+        <a href="https://translate.yandex.ru/trainer" target="_blank" class="s-card reveal">
+            <div class="tag">AI Trainer</div>
+            <h3>NEURO_MENTOR</h3>
+            <p>Интерактивные тренировки и разбор контекста. Мощный инструмент, заменяющий скучные учебники.</p>
+        </a>
+        <a href="https://quizlet.com/ru" target="_blank" class="s-card reveal">
+            <div class="tag">Memory Unit</div>
+            <h3>LEXIC_BASE</h3>
+            <p>Уникальная база слов. Наш алгоритм заставит вас запомнить лексику навсегда. Доступно везде.</p>
+        </a>
+    </section>
+
+    <div class="container">
+        <section class="faq-section reveal">
+            <h2 style="font-size: 3rem; margin-bottom: 60px; letter-spacing: -2px;">ВОПРОСЫ И ОТВЕТЫ</h2>
+            
+            <div class="faq-item">
+                <div class="faq-header">Для какого уровня подходит навигатор? <span>+</span></div>
+                <div class="faq-body">Система полностью адаптивна. Она анализирует ваши знания и подбирает инструменты как для абсолютных новичков (A1), так и для продвинутых пользователей (C1), которым нужна живая практика.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header">Будет ли это работать без VPN? <span>+</span></div>
+                <div class="faq-body">Да. Мы специально отобрали ресурсы, которые стабильно работают на территории РФ. Вам не нужно использовать сторонние сервисы для доступа к обучению.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header">Действительно ли это бесплатно? <span>+</span></div>
+                <div class="faq-body">Все ключевые ресурсы в нашей подборке имеют мощные бесплатные версии. Мы отобрали только то, что работает без обязательных подписок и привязки карт.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header">Как быстро я увижу результат? <span>+</span></div>
+                <div class="faq-body">При ежедневном использовании системы по 20 минут, вы заметите значительный прогресс в понимании текстов уже через 14 дней. Главное — регулярность.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header">Заменит ли это живое общение? <span>+</span></div>
+                <div class="faq-body">NEURO_MENTOR и другие инструменты подготавливают базу. Они убирают страх ошибки, чтобы вы могли уверенно перейти к общению с реальными людьми.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header">Можно ли учиться с телефона? <span>+</span></div>
+                <div class="faq-body">Безусловно. Сайт и все предложенные сервисы имеют отличные мобильные версии или приложения, доступные в сторах.</div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="big-logo">NAV_CORP</div>
+        <p style="opacity: 0.4; letter-spacing: 2px;">РАЗРАБОТАНО: М.И. КИСЕЛЕВ // ГРУППА 25Д // 2026</p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // ЖЕЛЕЗОБЕТОННЫЙ FAQ
+        document.querySelectorAll('.faq-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const item = header.parentElement;
+                const isActive = item.classList.contains('active');
+                document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
+                if (!isActive) item.classList.add('active');
+            });
+        });
+
+        // REVEAL ANIMATION
+        const reveal = () => {
+            document.querySelectorAll('.reveal').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+        }
+        window.addEventListener('scroll', reveal);
+        reveal();
+    </script>
+</body>
+</html>
