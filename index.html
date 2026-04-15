@@ -78,6 +78,54 @@
 
         footer { padding: 100px 0; text-align: center; border-top: 1px solid var(--line); position: relative; }
         .big-logo { font-size: 15vw; font-weight: 900; opacity: 0.03; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); pointer-events: none; }
+/* ЖЕСТКИЙ АДАПТИВ ДЛЯ ТЕЛЕФОНОВ */
+@media (max-width: 768px) {
+    /* 1. Убираем огромные отступы по бокам */
+    .container {
+        width: 95% !important;
+        margin: 20px auto !important;
+    }
+
+    /* 2. Заголовок делаем адекватного размера, чтобы не вылезал */
+    h1 {
+        font-size: 2.5rem !important;
+        line-height: 1 !important;
+    }
+
+    /* 3. Сетку с карточками (Tools Grid) перестраиваем в один столбик */
+    .tools-grid {
+        grid-template-columns: 1fr !important; /* Всё в одну колонку */
+        gap: 15px !important;
+    }
+
+    /* 4. Навигация (Sidebar) на мобилках */
+    .sidebar {
+        width: 280px !important;
+    }
+
+    /* 5. Делаем кнопки в карточках крупнее, чтобы пальцем попадать */
+    .tool-card .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* 6. Адаптируем блоки FAQ */
+    .faq-header {
+        font-size: 0.9rem !important;
+        padding: 15px !important;
+    }
+
+    /* 7. Футер (логотип внизу) */
+    .big-logo {
+        font-size: 15vw !important; /* Тянется по ширине экрана */
+    }
+}
+
+/* Фикс для совсем маленьких экранов (iPhone SE и т.д.) */
+@media (max-width: 480px) {
+    h1 { font-size: 2rem !important; }
+    .hero-section { padding: 40px 0 !important; }
+}
     </style>
 </head>
 <body>
